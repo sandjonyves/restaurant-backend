@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getAllOrderItems, getOrderItemById, createOrderItem, updateOrderItem, deleteOrderItem } = require('../controllers/OrderItemController');
 const { isAuthenticated } = require('../middlewares/authMiddleware');
+const { getOrdersByUserId } = require('../controllers/orderController');
 
 /**
  * @swagger
@@ -192,6 +193,7 @@ router.get('/', getAllOrderItems);
  *         description: Non autorisé
  */
 router.get('/:id', getOrderItemById);
+router.get('/user/:id', getOrdersByUserId);
 router.post('/', isAuthenticated, createOrderItem);
 router.put('/:id', isAuthenticated, updateOrderItem);
 router.delete('/:id', isAuthenticated, deleteOrderItem);

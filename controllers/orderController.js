@@ -24,7 +24,7 @@ async function getOrderById(req, res, next) {
   }
 }
 
-async function getPendingOrdersByUserId(req, res, next) {
+async function getOrdersByUserId(req, res, next) {
   try {
     const { user_id } = req.params;
 
@@ -37,13 +37,14 @@ async function getPendingOrdersByUserId(req, res, next) {
     const orders = await Order.findAll({
       where: {
         user_id,
-        status: 'pending'
+        // status: ['pending', 'accepted'] // On peut ajuster les statuts selon les besoins
       },
       // include: [
       //   { model: OrderItem } // si tu veux inclure les produits commandés
       // ],
       order: [['createdAt', 'DESC']] 
     });
+    console.log(`Found ${orders.length} orders for user_id ${user_id}`,orders);
 
     if (!orders.length) {
       return res.status(404).json({ error: 'No pending orders found' });
@@ -183,6 +184,7 @@ async function updateOrderStatus(req, res, next) {
 
 module.exports = {
   getAllOrders,
+  getOrdersByUserId,
   getOrderById,
   createOrder,
   updateOrder,

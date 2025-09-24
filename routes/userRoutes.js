@@ -261,6 +261,6 @@ router.get('/clients', getAllClients);
  */
 router.get('/:id', getUserById);
 router.put('/:id', isAuthenticated, isAdmin, updateUser);
-router.delete('/:id', isAuthenticated, isAdmin, deleteUser);
-
+// router.delete('/:id', isAuthenticated, isAdmin, deleteUser);
+router.delete('/:id',deleteUser);
 module.exports = router;

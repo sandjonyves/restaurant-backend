@@ -168,17 +168,6 @@ router.post('/login', loginUser);
  *         description: Erreur serveur
  */
 // Route pour la connexion OAuth
-router.post('/oauth/login', async (req, res, next) => {
-  try {
-    const { profile, tokens } = req.body;
-    if (!profile || !tokens) {
-      return res.status(400).json({ error: 'profile and tokens are required' });
-    }
-    const result = await handleOAuthLogin(profile, tokens);
-    res.json(result);
-  } catch (err) {
-    next(err);
-  }
-});
+router.post('/oauth/login', handleOAuthLogin)
 
 module.exports = router;

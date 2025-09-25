@@ -214,7 +214,8 @@ router.get('/', getAllCategories);
  *         description: Accès refusé - Admin requis
  */
 router.get('/:id', getCategoryById);
-router.post('/', isAuthenticated, isAdmin, createCategory);
+// router.post('/', isAuthenticated, isAdmin, createCategory);
+router.post('/', createCategory);
 router.post('/bulk', createMultipleCategories);
 // router.post('/bulk', isAuthenticated, isAdmin, createMultipleCategories);
 router.put('/:id', isAuthenticated, isAdmin, updateCategory);

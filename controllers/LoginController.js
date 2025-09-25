@@ -54,7 +54,7 @@ async function loginUser(req, res) {
           name: name || email.split('@')[0], // Utilise le nom fourni ou la partie avant @ de l'email
           email: email,
           password: hashedPassword,
-          role: 'user' // Rôle par défaut
+          role: 'client' // Rôle par défaut
         });
         
         console.log(`Nouvel utilisateur créé: ${email}`);

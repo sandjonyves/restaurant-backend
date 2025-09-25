@@ -215,8 +215,9 @@ router.get('/', getAllCategories);
  */
 router.get('/:id', getCategoryById);
 // router.post('/', isAuthenticated, isAdmin, createCategory);
-router.post('/', createCategory);
-router.post('/bulk', createMultipleCategories);
+const upload = require("../middlewares/Multer")
+router.post('/', upload.single("image"), createCategory);
+router.post('/bulk', upload.array("images"), createMultipleCategories);
 // router.post('/bulk', isAuthenticated, isAdmin, createMultipleCategories);
 router.put('/:id', isAuthenticated, isAdmin, updateCategory);
 router.delete('/:id', isAuthenticated, isAdmin, deleteCategory);

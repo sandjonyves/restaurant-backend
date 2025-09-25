@@ -1,5 +1,5 @@
 const { Category } = require('../models');
-
+const cloudinary = require("../config/cloudinary")
 // Obtenir toutes les catégories
 async function getAllCategories(req, res, next) {
   try {
@@ -27,16 +27,35 @@ async function getCategoryById(req, res, next) {
 // Créer une nouvelle catégorie
 async function createCategory(req, res, next) {
   try {
-    const { name, image_url } = req.body;
+    const { name, description } = req.body;
+
     if (!name) {
       return res.status(400).json({ error: 'Name is required' });
     }
-    const category = await Category.create({ name, image_url });
+
+    let imageUrl = null;
+
+    // Vérifie si une image a été envoyée
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'categories', // pour organiser dans ton cloudinary
+      });
+      imageUrl = result.secure_url;
+    }
+
+    const category = await Category.create({
+      name,
+      description,
+      image_url: imageUrl,
+    });
+
     res.status(201).json({ success: true, data: category });
   } catch (err) {
     next(err);
   }
 }
+
+export default { createCategory };
 
 // Mettre à jour une catégorie
 async function updateCategory(req, res, next) {

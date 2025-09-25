@@ -75,7 +75,7 @@ async function createOrder(req, res, next) {
       return res.status(400).json({ error: 'Total price is required and must be a number' });
     }
 
-    // Vérification de la table
+    // Vérification de la table et récupération du restaurant
     let restaurantId = null;
     if (table_id) {
       const table = await RestaurantTable.findByPk(table_id);
@@ -85,12 +85,21 @@ async function createOrder(req, res, next) {
       restaurantId = table.restaurant_id;
     }
 
+    // Vérification de l'utilisateur
+    if (!user_id) {
+      return res.status(400).json({ error: 'user_id is required' });
+    }
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+
     // Vérification des produits
     for (const item of items) {
       if (!item.product_id || !item.unit_price || !Number.isInteger(item.quantity) || item.quantity < 1) {
         return res.status(400).json({ error: 'Each item must have a valid product_id, unit_price, and quantity' });
       }
-      // Vérifier que le produit existe
+      // Vérification optionnelle que le produit existe
       // const product = await Product.findByPk(item.product_id);
       // if (!product) {
       //   return res.status(400).json({ error: `Invalid product_id: ${item.product_id}` });
@@ -101,7 +110,7 @@ async function createOrder(req, res, next) {
     const order = await Order.create({
       restaurant_id: restaurantId,
       table_id: table_id || null,
-      user_id: user_id || null,
+      user_id,
       total_price,
       status: status || 'pending',
     });
@@ -125,6 +134,7 @@ async function createOrder(req, res, next) {
     next(err);
   }
 }
+
 
 // Mettre à jour une commande
 async function updateOrder(req, res, next) {

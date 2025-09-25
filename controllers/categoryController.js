@@ -55,7 +55,7 @@ async function createCategory(req, res, next) {
   }
 }
 
-export default { createCategory };
+
 
 // Mettre à jour une catégorie
 async function updateCategory(req, res, next) {

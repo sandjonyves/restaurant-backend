@@ -1,7 +1,7 @@
 const sequelize = require('../config/db');
 
 const User = require('./user');
-const RefreshToken = require('./RefreshToken');
+const RefreshToken = require('./refreshToken');
 const Category = require('./category');
 const Product = require('./product');
 const Restaurant = require('./restaurant');

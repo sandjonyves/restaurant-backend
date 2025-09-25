@@ -1,10 +1,11 @@
 const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
 const env = process.env.NODE_ENV || 'dev';
 
 let sequelize;
 
-if (env === 'dev' || env === 'prod') {
+if (env === 'prod') {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     logging: false,
@@ -22,6 +23,7 @@ if (env === 'dev' || env === 'prod') {
     }
   });
 } else {
+  // pour les tests (SQLite par exemple)
   sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: './database.sqlite',

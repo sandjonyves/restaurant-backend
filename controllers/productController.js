@@ -1,5 +1,5 @@
 const { Product } = require('../models');
-
+const cloudinary = require("../config/cloudinary")
 // Obtenir tous les produits
 async function getAllProducts(req, res, next) {
   try {
@@ -65,18 +65,53 @@ async function getProductById(req, res, next) {
 }
 
 // Créer un nouveau produit
+;
 async function createProduct(req, res, next) {
   try {
-    const { name, description, price, image_url, is_available, is_out_of_stock, category_id } = req.body;
-    if (!name || !price || !category_id) {
-      return res.status(400).json({ error: 'name, price, and category_id are required' });
+    let { name, description, price, is_available, is_out_of_stock, category_id } = req.body;
+
+    // Si tu envoies un JSON dans un champ 'product', parser :
+    if (req.body.product) {
+      const productData = JSON.parse(req.body.product);
+      name = productData.name || name;
+      description = productData.description || description;
+      price = productData.price || price;
+      category_id = productData.category_id || category_id;
+      is_available = productData.is_available ?? is_available;
+      is_out_of_stock = productData.is_out_of_stock ?? is_out_of_stock;
     }
-    const product = await Product.create({ name, description, price, image_url, is_available, is_out_of_stock, category_id });
+
+    if (!name || !price || !category_id) {
+      return res.status(400).json({ error: "name, price, and category_id are required" });
+    }
+
+    let imageUrl = null;
+
+    // Upload l'image sur Cloudinary si elle est fournie
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "products", // changer si besoin
+      });
+      imageUrl = result.secure_url;
+    }
+
+    const product = await Product.create({
+      name,
+      description,
+      price,
+      image_url: imageUrl,
+      is_available: is_available ?? true, // par défaut true
+      is_out_of_stock: is_out_of_stock ?? false, // par défaut false
+      category_id,
+    });
+
     res.status(201).json({ success: true, data: product });
   } catch (err) {
     next(err);
   }
 }
+
+module.exports = { createProduct };
 
 // Mettre à jour un produit
 async function updateProduct(req, res, next) {

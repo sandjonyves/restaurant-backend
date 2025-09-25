@@ -329,10 +329,19 @@ router.get('/category/:categoryId', getProductsByCategory);
  *         description: Accès refusé - Admin requis
  */
 router.get('/:id', getProductById);
-router.post('/', isAuthenticated, isAdmin, createProduct);
+// router.post('/', isAuthenticated, isAdmin, createProduct);
+const upload = require("../middlewares/Multer");
+
+
+
+router.post("/", upload.single("image"), createProduct);
 // router.post('/bulk', isAuthenticated, isAdmin, createMultipleProducts);
 router.post('/bulk', createMultipleProducts);
 router.put('/:id', isAuthenticated, isAdmin, updateProduct);
 router.delete('/:id', isAuthenticated, isAdmin, deleteProduct);
+
+
+
+
 
 module.exports = router;
